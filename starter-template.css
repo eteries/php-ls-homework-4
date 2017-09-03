@@ -7,12 +7,16 @@ body {
 }
 
 .form-container{
-  margin-top: 25%;
   width: 100%;
   text-align: center;
   display: flex;
   justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 51px);
 }
 .form-horizontal {
-  width: 35%;
+  width: 45%;
+}
+.control-label {
+  text-align: left;
 }
