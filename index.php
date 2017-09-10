@@ -1,3 +1,53 @@
+<?php
+session_start();
+
+require_once 'php/functions.php';
+require_once 'php/connect.php';
+
+$is_new_user = false;
+$invalid_controls = [];
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $login = trim($_POST['login'] ?? '');
+    $pass = trim($_POST['pass'] ?? '');
+
+    /**
+     * Сформировать массив не валидных полей, если таковые найдутся.
+     */
+    if (empty($login)) {
+        $invalid_controls[] = 'login';
+    }
+
+    if (empty($pass)) {
+        $invalid_controls[] = 'pass';
+    }
+    /**
+     * Если данные введены без ошибок, сформировать пару логин/пароль для процедуры логина
+     */
+    if (empty($invalid_controls)) {
+        $existing_user = db_findUserByLogin($DBH, $login);
+
+        // Если впользователь с этим логином находится, то для авторизации сверяется пароль
+        if (!empty($existing_user)) {
+            $this_user = $existing_user[0];
+            $verify = password_verify($pass, $this_user['pass']);
+
+            if ($verify === true) {
+                $_SESSION['user'] = $this_user;
+                header('location: list.html');
+                exit();
+            } else {
+                $invalid_controls[] = 'pass';
+            }
+        } else {
+            // Если пользователь с этим e-mail не находится, выводится соответствующее сообщение
+            $invalid_controls[] = 'login';
+        }
+    }
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -40,7 +90,7 @@
         </div>
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="index.html">Авторизация</a></li>
+            <li class="active"><a href="index.php">Авторизация</a></li>
             <li><a href="reg.html">Регистрация</a></li>
             <li><a href="list.html">Список пользователей</a></li>
             <li><a href="filelist.html">Список файлов</a></li>
@@ -52,17 +102,17 @@
     <div class="container">
 
       <div class="form-container">
-        <form class="form-horizontal" action="">
-          <div class="form-group">
+        <form class="form-horizontal"  method="post" name="login-form" action="index.php">
+          <div class="form-group <?= in_array('login', $invalid_controls) ? 'has-error' : '' ?>">
             <label for="inputEmail3" class="col-sm-2 control-label">Логин</label>
             <div class="col-sm-10">
-              <input type="text" class="form-control" id="inputEmail3" placeholder="Логин">
+              <input type="text" class="form-control" id="inputEmail3" placeholder="Логин" name="login">
             </div>
           </div>
-          <div class="form-group">
+          <div class="form-group <?= in_array('pass', $invalid_controls) ? 'has-error' : '' ?>">
             <label for="inputPassword3" class="col-sm-2 control-label">Пароль</label>
             <div class="col-sm-10">
-              <input type="password" class="form-control" id="inputPassword3" placeholder="Пароль">
+              <input type="password" class="form-control" id="inputPassword3" placeholder="Пароль" name="pass">
             </div>
           </div>
           <div class="form-group">
@@ -83,6 +133,9 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="js/main.js"></script>
+    <script>
+
+    </script>
     <script src="js/bootstrap.min.js"></script>
 
   </body>
