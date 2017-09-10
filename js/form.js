@@ -26,6 +26,7 @@ form.addEventListener('submit', function(event) {
     oReq.send(oData);
     event.preventDefault();
 
+    // Очистка подсветки ошибок при отправке
     var errors = form.querySelectorAll('.has-error');
     if (errors) {
       [].forEach.call(errors, function (item) {
