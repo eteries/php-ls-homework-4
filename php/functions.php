@@ -65,7 +65,7 @@ function formUserFromPost() : array
 
     $user[] = trim($_POST['login'] ?? '');
     $user[] = trim($_POST['name'] ?? '');
-    $user[] = trim($_POST['pass'] ?? '');
+    $user[] = password_hash(trim($_POST['pass'] ?? ''), PASSWORD_BCRYPT);
     $user[] = trim($_POST['age'] ?? '');
     $user[] = trim($_POST['description'] ?? '');
 
