@@ -1,3 +1,17 @@
+<?php
+session_start();
+
+require_once 'php/functions.php';
+require_once 'php/connect.php';
+
+if (!isset($_SESSION['user'])) {
+    header('HTTP/1.0 403 Forbidden');
+    die('Forbidden');
+}
+
+$users = db_getAllUsers($DBH);
+?>
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -8,7 +22,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Starter Template for Bootstrap</title>
+    <title>РегистраторЪ</title>
 
     <!-- Bootstrap core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -26,28 +40,7 @@
   </head>
 
   <body>
-
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="#">Project name</a>
-        </div>
-        <div id="navbar" class="collapse navbar-collapse">
-          <ul class="nav navbar-nav">
-            <li class="active"><a href="index.php">Авторизация</a></li>
-            <li><a href="reg.html">Регистрация</a></li>
-            <li><a href="list.html">Список пользователей</a></li>
-            <li><a href="filelist.html">Список файлов</a></li>
-          </ul>
-        </div><!--/.nav-collapse -->
-      </div>
-    </nav>
+  <? echo renderTemplate('templates/nav.php'); ?>
 
     <div class="container">
     <h1>Запретная зона, доступ только авторизированному пользователю</h1>
@@ -61,6 +54,16 @@
           <th>Фотография</th>
           <th>Действия</th>
         </tr>
+          <?php foreach ($users as $user) : ?>
+            <tr>
+              <td><?= $user['login'] ?></td>
+              <td><?= $user['name'] ?></td>
+              <td><?= convertDateToAge($user['age']) ?></td>
+              <td><?= $user['description'] ?></td>
+              <td><img src="photos/<?= (!empty($user['img']) ? $user['img'] : 'user.jpg') ?>" width="100" alt="<?= $user['name'] ?>"></td>
+              <td><a href="" onclick="remove('<?= $user['login'] ?>'); return false;">Удалить пользователя</a></td>
+            </tr>
+          <?php endforeach; ?>
         <tr>
           <td>vasya99</td>
           <td>Вася</td>
@@ -81,6 +84,7 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="js/main.js"></script>
+    <script src="js/remove.js"></script>
     <script src="js/bootstrap.min.js"></script>
 
   </body>

@@ -1,3 +1,18 @@
+<?php
+session_start();
+
+require_once 'php/functions.php';
+require_once 'php/connect.php';
+
+if (!isset($_SESSION['user'])) {
+    header('HTTP/1.0 403 Forbidden');
+    die('Forbidden');
+}
+
+$this_user = $_SESSION['user'];
+$files = readAllImages();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -26,28 +41,7 @@
   </head>
 
   <body>
-
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="#">Project name</a>
-        </div>
-        <div id="navbar" class="collapse navbar-collapse">
-          <ul class="nav navbar-nav">
-            <li class="active"><a href="index.php">Авторизация</a></li>
-            <li><a href="reg.php">Регистрация</a></li>
-            <li><a href="list.php">Список пользователей</a></li>
-            <li><a href="filelist.html">Список файлов</a></li>
-          </ul>
-        </div><!--/.nav-collapse -->
-      </div>
-    </nav>
+  <? echo renderTemplate('templates/nav.php', []); ?>
 
     <div class="container">
     <h1>Запретная зона, доступ только авторизированному пользователю</h1>
@@ -58,13 +52,13 @@
           <th>Фотография</th>
           <th>Действия</th>
         </tr>
-        <tr>
-          <td>1.jpg</td>
-          <td><img src="http://lorempixel.com/people/200/200/" alt=""></td>
-          <td>
-            <a href="">Удалить аватарку пользователя</a>
-          </td>
-        </tr>
+        <?php foreach ($files as $file) : ?>
+          <tr>
+              <td><?= $file ?></td>
+              <td><img src="photos/<?= $file ?>" width="100" alt="<?= $file ?>"></td>
+              <td><a href="" onclick="remove_avatar('<?= $file ?>'); return false;">Удалить аватарку пользователя</a></td>
+          </tr>
+        <?php endforeach; ?>
       </table>
 
     </div><!-- /.container -->
@@ -75,6 +69,7 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="js/main.js"></script>
+    <script src="js/remove_avatar.js"></script>
     <script src="js/bootstrap.min.js"></script>
 
   </body>

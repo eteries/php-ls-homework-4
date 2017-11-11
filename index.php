@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             if ($verify === true) {
                 $_SESSION['user'] = $this_user;
-                header('location: list.html');
+                header('location: list.php');
                 exit();
             } else {
                 $invalid_controls[] = 'pass';
@@ -77,27 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   <body>
 
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="#">Project name</a>
-        </div>
-        <div id="navbar" class="collapse navbar-collapse">
-          <ul class="nav navbar-nav">
-            <li class="active"><a href="index.php">Авторизация</a></li>
-            <li><a href="reg.html">Регистрация</a></li>
-            <li><a href="list.html">Список пользователей</a></li>
-            <li><a href="filelist.html">Список файлов</a></li>
-          </ul>
-        </div><!--/.nav-collapse -->
-      </div>
-    </nav>
+    <? echo renderTemplate('templates/nav.php') ?>
 
     <div class="container">
 
@@ -119,7 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="col-sm-offset-2 col-sm-10">
               <button type="submit" class="btn btn-default">Войти</button>
               <br><br>
-              Нет аккаунта? <a href="reg.html">Зарегистрируйтесь</a>
+              Нет аккаунта? <a href="reg.php">Зарегистрируйтесь</a>
             </div>
           </div>
         </form>

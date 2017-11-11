@@ -7,20 +7,23 @@ form.addEventListener('submit', function(event) {
     oReq.open('POST', 'php/form.php', true);
     oReq.onload = function(oEvent) {
       if (oReq.status == 200) {
-          var data = JSON.parse(oReq.response);
-          var invalidControls = JSON.parse(oReq.response).invalid_controls;
-          if (invalidControls) {
-            [].forEach.call(invalidControls, function(name) {
-              form.elements[name].parentNode.parentNode.classList.add('has-error');
-            });
-          }
-          var message = JSON.parse(oReq.response).message;
-          if (message) {
-            alert(message);
-          }
-        } else {
-            alert("Ошибка " + oReq.status + " загрузки данных.");
+        var data = JSON.parse(oReq.response);
+
+        var invalidControls = data.invalid_controls;
+        if (invalidControls) {
+          [].forEach.call(invalidControls, function(name) {
+            form.elements[name].parentNode.parentNode.classList.add('has-error');
+          });
         }
+
+        var message = data.message;
+        if (message) {
+          alert(message);
+        }
+      }
+      else {
+          alert("Ошибка " + oReq.status + " загрузки данных.");
+      }
     };
 
     oReq.send(oData);
